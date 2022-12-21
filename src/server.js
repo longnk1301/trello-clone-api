@@ -1,7 +1,7 @@
 import express from 'express';
 import { connectDB } from './config/mongodb.js';
 import { env } from './config/environments.js';
-import { BoardModel } from './models/board.model.js';
+import { apiV1 } from './routes/v1/index.js';
 
 connectDB()
   .then(() => console.log('Connected successfully!'))
@@ -16,18 +16,11 @@ const bootServer = () => {
   const hostname = env.HOST_NAME;
   const port = env.PORT;
 
-  app.get('/', (req, res) => {
-    res.end('hello');
-  });
+  //Enable req.body data
+  app.use(express.json());
 
-  app.get('/add-board', async (req, res) => {
-    const dummyData = {
-      title: 'Add dummy data',
-    };
-
-    await BoardModel.create(dummyData);
-    res.end('Add dummy data');
-  });
+  //Use API V1
+  app.use('/v1', apiV1);
 
   app.listen(port, hostname, () => {
     console.log(`Running at ${hostname}:${port}/`);
