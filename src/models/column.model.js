@@ -41,7 +41,7 @@ const update = async (id, data) => {
       .findOneAndUpdate(
         { _id: ObjectId(id) }, // condition
         { $set: data}, // set new data
-        { returnOriginal: true } // return record after updated
+        { returnDocument: 'after' } // return record after updated
       );
 
     return result;
