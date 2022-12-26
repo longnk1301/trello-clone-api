@@ -1,11 +1,12 @@
 import Joi from 'joi';
+import { ObjectId } from 'mongodb';
 import { getDatabase } from '../config/mongodb.js';
 
 const columnCollectionName = 'columns';
 
 const columnCollectionSchema = Joi.object({
   boardId: Joi.string().required(),
-  title: Joi.string().required().min(3).max(20),
+  title: Joi.string().required().min(3).max(20).trim(),
   cardOrder: Joi.array().items(Joi.string()).default([]),
   createdAt: Joi.date().timestamp().default(Date.now()),
   updatedAt: Joi.date().timestamp().default(null),
@@ -27,10 +28,29 @@ const create = async (data) => {
 
     return result;
   } catch (error) {
-    console.log(error);
+    throw new Error(error);
+  }
+};
+
+
+const update = async (id, data) => {
+  try {
+    
+    const result = await getDatabase()
+      .collection(columnCollectionName)
+      .findOneAndUpdate(
+        { _id: ObjectId(id) }, // condition
+        { $set: data}, // set new data
+        { returnOriginal: true } // return record after updated
+      );
+
+    return result;
+  } catch (error) {
+    throw new Error(error);
   }
 };
 
 export const ColumnModel = {
   create,
+  update
 };
