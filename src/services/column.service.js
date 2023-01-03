@@ -1,21 +1,29 @@
+import { BoardModel } from '../models/board.model.js';
 import { ColumnModel } from '../models/column.model.js';
 
 const create = async (data) => {
   try {
-    const result = await ColumnModel.create(data);
-    return result;
+    const newColumn = await ColumnModel.create(data);
+    console.log('newColumn', newColumn)
+
+    //update columnOrder Array in board collection
+    await BoardModel.pushColumnOrder(
+      newColumn.boardId.toString(),
+      newColumn._id.toString()
+    );
+
+    return newColumn;
   } catch (error) {
     throw new Error(error);
   }
 };
 
-
 const update = async (id, data) => {
   try {
     const newData = {
       ...data,
-      updatedAt: Date.now()
-    }
+      updatedAt: Date.now(),
+    };
     const result = await ColumnModel.update(id, newData);
     return result;
   } catch (error) {
@@ -25,5 +33,5 @@ const update = async (id, data) => {
 
 export const ColumnService = {
   create,
-  update
+  update,
 };

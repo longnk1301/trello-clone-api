@@ -22,9 +22,13 @@ const validateSchema = async (data) => {
 const create = async (data) => {
   try {
     const value = await validateSchema(data);
-    const result = await getDatabase()
+    const response = await getDatabase()
       .collection(cardCollectionName)
       .insertOne(value);
+
+    const result = await getDatabase()
+      .collection(cardCollectionName)
+      .findOne(response.insertedId)
 
     return result;
   } catch (error) {
@@ -33,5 +37,6 @@ const create = async (data) => {
 };
 
 export const CardModel = {
+  cardCollectionName,
   create,
 };

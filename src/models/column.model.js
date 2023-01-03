@@ -19,19 +19,38 @@ const validateSchema = async (data) => {
   });
 };
 
+const pushCardOrder = async (columnId, cardId) => {
+  try {
+    const result = await getDatabase()
+      .collection(columnCollectionName)
+      .findOneAndUpdate(
+        { _id: ObjectId(columnId) }, // condition
+        { $push: { cardOrder: cardId } }, // set new data
+        { returnDocument: 'after' } // return record after updated
+      );
+
+    return result.value;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 const create = async (data) => {
   try {
     const value = await validateSchema(data);
-    const result = await getDatabase()
+    const response = await getDatabase()
       .collection(columnCollectionName)
       .insertOne(value);
+
+    const result = await getDatabase()
+      .collection(columnCollectionName)
+      .findOne(response.insertedId)
 
     return result;
   } catch (error) {
     throw new Error(error);
   }
 };
-
 
 const update = async (id, data) => {
   try {
@@ -51,6 +70,8 @@ const update = async (id, data) => {
 };
 
 export const ColumnModel = {
+  columnCollectionName,
   create,
-  update
+  update,
+  pushCardOrder,
 };

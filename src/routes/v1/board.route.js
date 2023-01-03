@@ -9,4 +9,6 @@ router
   .get((req, res) => {})
   .post(BoardValidation.create, BoardController.create);
 
+router.route('/:id').get(BoardController.getFullBoard);
+
 export const BoardRoutes = router;
