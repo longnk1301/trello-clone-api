@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import { getDatabase } from '../config/mongodb.js';
+import { ObjectId } from 'mongodb';
 
 const cardCollectionName = 'cards';
 
@@ -36,7 +37,26 @@ const create = async (data) => {
   }
 };
 
+
+const update = async (id, data) => {
+  try {
+    
+    const result = await getDatabase()
+      .collection(cardCollectionName)
+      .findOneAndUpdate(
+        { _id: ObjectId(id) }, // condition
+        { $set: data}, // set new data
+        { returnDocument: 'after' } // return record after updated
+      );
+
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const CardModel = {
   cardCollectionName,
   create,
+  update
 };

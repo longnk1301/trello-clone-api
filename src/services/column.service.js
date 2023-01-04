@@ -4,7 +4,6 @@ import { ColumnModel } from '../models/column.model.js';
 const create = async (data) => {
   try {
     const newColumn = await ColumnModel.create(data);
-    console.log('newColumn', newColumn)
 
     //update columnOrder Array in board collection
     await BoardModel.pushColumnOrder(
