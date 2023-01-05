@@ -54,7 +54,6 @@ const create = async (data) => {
 
 const update = async (id, data) => {
   try {
-    
     const result = await getDatabase()
       .collection(columnCollectionName)
       .findOneAndUpdate(
